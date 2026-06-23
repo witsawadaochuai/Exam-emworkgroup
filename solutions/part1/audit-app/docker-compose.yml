@@ -1,0 +1,13 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: audit_pg
+    environment:
+      POSTGRES_USER: payroll
+      POSTGRES_PASSWORD: payroll
+      POSTGRES_DB: payroll
+    ports:
+      - "5432:5432"          # PostgreSQL จริงที่ port 5432
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    # ไม่ผูก data volume เพื่อให้ทุกครั้งที่ลบ container แล้วสร้างใหม่ จะ seed ข้อมูลสดเสมอ

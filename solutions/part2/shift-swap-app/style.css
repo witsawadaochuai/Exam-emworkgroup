@@ -1,0 +1,475 @@
+/* ============================================================================
+   DESIGN SYSTEM & CUSTOM PROPERTIES
+   ============================================================================ */
+:root {
+    --bg-dark: #080b11;
+    --bg-card: rgba(15, 23, 42, 0.65);
+    --bg-input: rgba(30, 41, 59, 0.5);
+    
+    --primary: #06b6d4;
+    --primary-glow: rgba(6, 182, 212, 0.15);
+    --success: #10b981;
+    --success-glow: rgba(16, 185, 129, 0.15);
+    --danger: #ef4444;
+    --danger-glow: rgba(239, 68, 68, 0.15);
+    --warning: #f59e0b;
+    --warning-glow: rgba(245, 158, 11, 0.15);
+    
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --text-darker: #475569;
+    
+    --border-color: rgba(255, 255, 255, 0.06);
+    --border-hover: rgba(255, 255, 255, 0.12);
+    
+    --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: 'Fira Code', source-code-pro, Menlo, Monaco, Consolas, monospace;
+}
+
+/* ============================================================================
+   GLOBAL STYLES & RESET
+   ============================================================================ */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.07) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(245, 158, 11, 0.04) 0px, transparent 50%);
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+.app-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* ============================================================================
+   HEADER & NAVIGATION
+   ============================================================================ */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1.5rem;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo-icon {
+    font-size: 2.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.5rem;
+    border-radius: 12px;
+}
+
+.app-header h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    background: linear-gradient(135deg, #fff 40%, var(--primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.system-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-indicator.online {
+    background-color: var(--success);
+    box-shadow: 0 0 8px var(--success);
+}
+
+/* TABS */
+.app-tabs {
+    display: flex;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 0.4rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    overflow-x: auto;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 0.8rem 1.2rem;
+    border-radius: 8px;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    position: relative;
+}
+
+.tab-btn:hover {
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.tab-btn.active {
+    color: #fff;
+    background: var(--primary-glow);
+    border: 1px solid var(--primary);
+}
+
+.tab-btn .badge {
+    background: var(--danger);
+    color: #fff;
+    font-size: 0.7rem;
+    padding: 0.15rem 0.4rem;
+    border-radius: 10px;
+    margin-left: 0.35rem;
+    font-weight: 700;
+}
+
+/* ============================================================================
+   LAYOUTS & CARDS
+   ============================================================================ */
+.app-main {
+    min-height: 500px;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+    .grid-2col {
+        grid-template-columns: 1fr;
+    }
+}
+
+.glass {
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
+    transition: border-color 0.3s ease;
+}
+
+.glass:hover {
+    border-color: var(--border-hover);
+}
+
+.card-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.card-header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.card-header p {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* ============================================================================
+   TABLES
+   ============================================================================ */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.scrollable-table {
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.data-table th {
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--text-muted);
+    padding: 0.85rem 1rem;
+    font-weight: 500;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.data-table td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-main);
+}
+
+.data-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.data-table.compact th,
+.data-table.compact td {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+}
+
+/* Badge tags inside tables */
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-badge.pending {
+    background: var(--warning-glow);
+    color: #fbd38d;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.status-badge.approved {
+    background: var(--success-glow);
+    color: #86efac;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-badge.rejected {
+    background: var(--danger-glow);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Original vs Effective highlighted differences */
+.diff-highlight {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.swapped-pill {
+    background: rgba(6, 182, 212, 0.1);
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    margin-left: 0.5rem;
+}
+
+/* ============================================================================
+   FORMS & INPUTS
+   ============================================================================ */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.form-group select,
+.form-group input[type="text"] {
+    width: 100%;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: #fff;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.form-group select:focus,
+.form-group input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+/* RADIO GROUPS */
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    cursor: pointer;
+}
+
+/* BUTTONS */
+.btn {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.btn-sm {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8rem;
+    border-radius: 6px;
+}
+
+.primary-btn {
+    background: var(--primary);
+    color: #000;
+    width: 100%;
+}
+
+.primary-btn:hover {
+    background: #22d3ee;
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
+}
+
+.danger-btn {
+    background: var(--danger-glow);
+    color: #fca5a5;
+    border: 1px solid var(--danger);
+}
+
+.danger-btn:hover {
+    background: var(--danger);
+    color: #fff;
+}
+
+.success-btn {
+    background: var(--success-glow);
+    color: #a7f3d0;
+    border: 1px solid var(--success);
+}
+
+.success-btn:hover {
+    background: var(--success);
+    color: #fff;
+}
+
+/* ============================================================================
+   SCHEMA LOGIC INFO BOX
+   ============================================================================ */
+.schema-logic-box {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.schema-logic-box h3 {
+    font-size: 1rem;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.schema-logic-box p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.code-block {
+    background: rgba(0, 0, 0, 0.35);
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    overflow-x: auto;
+    color: #e2e8f0;
+    white-space: pre;
+    line-height: 1.4;
+}
+
+/* ============================================================================
+   FOOTER
+   ============================================================================ */
+.app-footer {
+    border-top: 1px solid var(--border-color);
+    padding-top: 1.5rem;
+    text-align: center;
+    color: var(--text-darker);
+    font-size: 0.8rem;
+}

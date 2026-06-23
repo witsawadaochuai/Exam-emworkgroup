@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ตัวอย่าง Bug ในระบบเงินเดือน</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="logo-area">
+                <span class="logo-icon">💸</span>
+                <div>
+                    <h1>ตัวอย่าง Bug ในระบบเงินเดือน</h1>
+                    <p class="subtitle">ทดลองรันโค้ดก่อนแก้และหลังแก้</p>
+                </div>
+            </div>
+        </header>
+
+        <nav class="app-tabs">
+            <button class="tab-btn active" data-tab="floating">1.1 Floating Point</button>
+            <button class="tab-btn" data-tab="sql">1.2 SQL Injection</button>
+            <button class="tab-btn" data-tab="race">1.3 Race Condition</button>
+            <button class="tab-btn" data-tab="nightshift">ข้อ 2 · Night Shift SQL</button>
+        </nav>
+
+        <main class="app-main">
+            <section id="floating" class="tab-content active">
+                <div class="part-heading">
+                    <span>1.1</span>
+                    <div><h2>Floating Point — เงินเพี้ยนจากเลขทศนิยม</h2><p>เหตุผลที่ไม่ควรใช้ float คำนวณเงินโดยตรง</p></div>
+                </div>
+
+                <div class="card glass lesson-card">
+                    <div class="card-body lesson-copy">
+                        <p>JavaScript เก็บเลขทศนิยมแบบ <strong>IEEE-754 double</strong> จึงไม่ได้แทนค่าทศนิยมบางค่าได้แม่นยำ 100%</p>
+                        <pre class="code-block">0.1 + 0.2
+// ค่าที่คาดหวัง: 0.3
+// ค่าที่ได้จริง: 0.30000000000000004</pre>
+                        <button id="run-decimal" class="btn primary-btn">▶ รันตัวอย่าง 0.1 + 0.2</button>
+                        <div id="decimal-output" class="demo-output">กดปุ่มเพื่อดูผลลัพธ์</div>
+                    </div>
+                </div>
+
+                <div class="grid-2col example-grid">
+                    <div class="card glass">
+                        <div class="card-header"><h2>❌ ก่อนแก้: คำนวณเป็นบาทด้วย float</h2></div>
+                        <div class="card-body lesson-copy">
+                            <pre class="code-block">const sso = baseSalary * 0.05;
+const otRate = (baseSalary / 30 / 8) * 1.5;
+const net = baseSalary + (otHours * otRate) - sso;</pre>
+                            <p>การคูณและหารอาจสร้างเศษทศนิยมยาว เช่น <code>1234.999999</code> หรือ <code>1235.00000001</code> หากคำนวณพนักงาน 800 คนทุกเดือน ยอดรวมอาจไม่ตรงกับบัญชี</p>
+                        </div>
+                    </div>
+
+                    <div class="card glass">
+                        <div class="card-header"><h2>✅ หลังแก้: คำนวณเป็นสตางค์</h2></div>
+                        <div class="card-body lesson-copy">
+                            <pre class="code-block">const salarySatang = Math.round(baseSalary * 100);
+const ssoSatang = Math.round(salarySatang * 0.05);
+
+// เก็บและบันทึกเป็นจำนวนเต็ม
+// 30,000 บาท = 3,000,000 สตางค์</pre>
+                            <p>กำหนดจุดปัดเศษด้วย <code>Math.round()</code> ให้ชัดเจน หรือใช้ decimal library และชนิด <code>DECIMAL</code> ในฐานข้อมูล</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card glass try-card">
+                    <div class="card-header"><h2>ทดลองกับเงินเดือน</h2><p>ดูค่าดิบก่อนแก้ เทียบกับจำนวนสตางค์หลังแก้</p></div>
+                    <div class="card-body">
+                        <div class="inline-form">
+                            <label>เงินเดือน (บาท)<input id="salary" type="number" value="30000.07" step="0.01"></label>
+                            <label>ชั่วโมง OT<input id="hours" type="number" value="15.5" step="0.1"></label>
+                            <button id="run-payroll" class="btn primary-btn">▶ คำนวณ</button>
+                        </div>
+                        <div id="payroll-output" class="demo-output">กดคำนวณเพื่อเปรียบเทียบ</div>
+                    </div>
+                </div>
+
+                <div class="takeaway"><strong>สรุป:</strong> เงินไม่ควรใช้ float คำนวณตรง ๆ ให้ใช้หน่วยเล็กสุด เช่น สตางค์ หรือใช้ decimal library / DECIMAL ในฐานข้อมูล</div>
+            </section>
+
+            <section id="sql" class="tab-content">
+                <div class="part-heading">
+                    <span>1.2</span>
+                    <div><h2>SQL Injection — เอาค่าจาก user มาต่อ SQL ตรง ๆ</h2><p>ตัวอย่างการต่อข้อความ SQL เทียบกับ parameterized query</p></div>
+                </div>
+                <div class="grid-2col example-grid">
+                    <div class="card glass"><div class="card-header"><h2>❌ ก่อนแก้</h2></div><div class="card-body lesson-copy"><pre class="code-block">`UPDATE salaries
+ SET balance = balance + ${net}
+ WHERE emp_id = ${empId}`</pre><p>ถ้า user ส่ง <code>empId = "1 OR 1=1"</code> SQL จะกลายเป็น:</p><pre class="code-block">UPDATE salaries
+SET balance = balance + 1000
+WHERE emp_id = 1 OR 1=1;</pre><p><code>OR 1=1</code> เป็นจริงเสมอ จึง update พนักงานทุกคน</p><p>กรณีรุนแรง เช่น <code>1; DROP TABLE salaries;--</code> อาจลบตารางได้ หาก database หรือ driver อนุญาตให้รันหลายคำสั่ง</p></div></div>
+                    <div class="card glass"><div class="card-header"><h2>✅ หลังแก้</h2></div><div class="card-body lesson-copy"><pre class="code-block">await db.query(
+  `UPDATE salaries
+   SET balance_satang = balance_satang + $1
+   WHERE emp_id = $2`,
+  [netSatang, empId]
+);</pre><p>Database driver รู้ว่า <code>$1</code> และ <code>$2</code> คือ “ข้อมูล” ไม่ใช่ “คำสั่ง SQL”</p><p>แม้ส่ง <code>empId = "1 OR 1=1"</code> ก็จะถูกค้นหาเป็น string ธรรมดา ไม่ได้เปลี่ยน logic ของ SQL</p></div></div>
+                </div>
+                <div class="card glass try-card">
+                    <div class="card-header"><h2>ทดลองกับข้อมูลพนักงาน 3 คน</h2><p>ยอดที่จะเพิ่ม: 1,000 บาท · Payload: <code>1 OR 1=1</code></p></div>
+                    <div class="card-body">
+                        <button id="run-sql" class="btn primary-btn">▶ ยิง SQL Injection แล้วดูตัวเลข</button>
+                        <div id="sql-output" class="demo-output">กดปุ่มเพื่อดูยอดเงินก่อนและหลังยิง</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="race" class="tab-content">
+                <div class="part-heading">
+                    <span>1.3</span>
+                    <div><h2>Race Condition — คำขอซ้ำทำให้จ่ายเงินซ้ำ</h2><p>ทดลองยิง processPayroll พร้อมกัน 2 ครั้ง</p></div>
+                </div>
+                <div class="card glass try-card">
+                    <div class="card-header"><h2>กำหนดค่าที่ต้องการทดสอบ</h2><p>ทุกคำขอใช้ Idempotency Key เดียวกัน เช่น <code>PAYROLL-2026-06-EMP001</code></p></div>
+                    <div class="card-body">
+                        <div class="inline-form">
+                            <label>Balance เริ่มต้น (บาท)<input id="race-start-balance" type="number" value="0" min="0" step="0.01"></label>
+                            <label>ยอดเงินต่อคำขอ (บาท)<input id="race-payment" type="number" value="30000" min="0.01" step="0.01"></label>
+                            <label>จำนวนคำขอที่ยิง<input id="race-request-count" type="number" value="2" min="1" max="100" step="1"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid-2col example-grid">
+                    <div class="card glass"><div class="card-header"><h2>❌ ก่อนแก้</h2></div><div class="card-body lesson-copy"><p>ทุกคำขอรัน <code>balance = balance + net</code> สำเร็จ จึงเพิ่มเงินซ้ำตามจำนวนที่ยิง</p><button id="run-race-buggy" class="btn danger-btn">▶ ยิงแบบไม่มี Idempotency</button></div></div>
+                    <div class="card glass"><div class="card-header"><h2>✅ หลังแก้</h2></div><div class="card-body lesson-copy"><p>Transaction และ <code>idempotency key</code> ทำให้คำขอแรกสำเร็จ ส่วนคำขอที่เหลือถูกปฏิเสธว่าเป็นรายการซ้ำ</p><button id="run-race-fixed" class="btn success-btn">▶ ยิงด้วย Idempotency</button></div></div>
+                </div>
+                <div id="race-output" class="demo-output">กำหนดตัวเลข แล้วเลือกทดลองก่อนแก้หรือหลังแก้</div>
+                <div class="takeaway"><strong>สรุป:</strong> transaction ช่วยควบคุมการทำงานพร้อมกัน ส่วน idempotency ป้องกันคำขอเดิมถูกประมวลผลซ้ำ</div>
+            </section>
+
+            <section id="nightshift" class="tab-content">
+                <div class="part-heading">
+                    <span>2</span>
+                    <div><h2>Night Shift SQL — หาคนกะดึกมาสาย</h2><p>หาพนักงานกะ Night ของวันทำงาน 19 มี.ค. 2026 ที่มาสาย (สแกนหลัง 00:05)</p></div>
+                </div>
+
+                <div class="card glass lesson-card">
+                    <div class="card-body lesson-copy">
+                        <p>กะ Night ทำงานช่วง <strong>00:00–08:00 ของวันถัดไป</strong> แต่พนักงานมักสแกนนิ้ว<strong>ก่อนเที่ยงคืน</strong> (เช่น 23:55 ของวันก่อนหน้า) เพื่อเข้ากะ ทำให้ "วันที่บนนาฬิกา" กับ "วันทำงานของกะ" ไม่ตรงกัน</p>
+                        <p>โจทย์: หาคนกะ Night ของ <strong>วันทำงาน 2026-03-19</strong> ที่มาสาย = สแกน<strong>ครั้งแรก</strong>หลัง <code>00:05</code></p>
+                    </div>
+                </div>
+
+                <div class="grid-2col example-grid">
+                    <div class="card glass"><div class="card-header"><h2>❌ ก่อนแก้</h2></div><div class="card-body lesson-copy"><pre class="code-block">WHERE DATE(clock_in) = '2026-03-19'
+  AND TIME(clock_in) > '00:05'</pre><p>กรองด้วย "วันที่ = 19" ตรง ๆ จึง<strong>ตัดคนที่สแกน 23:55 ของวันที่ 18 ทิ้ง</strong> และเพราะไม่ได้ดู "สแกนครั้งแรก" จึงเอาแถวเวลาอื่น (เช่น 04:00) มาตัดสินว่าสาย</p></div></div>
+                    <div class="card glass"><div class="card-header"><h2>✅ หลังแก้</h2></div><div class="card-body lesson-copy"><pre class="code-block">WHERE clock_in >= '2026-03-18 23:00'
+  AND clock_in &lt;  '2026-03-19 08:00'
+GROUP BY emp_id
+HAVING MIN(clock_in) > '2026-03-19 00:05'</pre><p>ใช้ <strong>ช่วงเวลาของวันทำงาน</strong> (เย็นวันก่อน → จบกะ) แล้วดู <code>MIN(clock_in)</code> = การสแกนครั้งแรก จึงรองรับการสแกนก่อนเที่ยงคืนได้ถูกต้อง</p></div></div>
+                </div>
+
+                <div class="card glass try-card">
+                    <div class="card-header"><h2>ทดลองกับข้อมูลสแกนนิ้ว</h2><p>กะ Night วันทำงาน 2026-03-19 · เกณฑ์สาย = สแกนครั้งแรกหลัง 00:05</p></div>
+                    <div class="card-body">
+                        <div class="table-wrap"><table class="result-table"><thead><tr><th>Emp ID</th><th>ชื่อ</th><th>เวลาสแกน</th><th>หมายเหตุ</th></tr></thead><tbody id="nightshift-data"></tbody></table></div>
+                        <div class="inline-form" style="margin-top:1rem">
+                            <button id="run-nightshift-buggy" class="btn danger-btn">▶ รัน Logic ก่อนแก้</button>
+                            <button id="run-nightshift-fixed" class="btn success-btn">▶ รัน Logic หลังแก้</button>
+                        </div>
+                        <div id="nightshift-output" class="demo-output">กดปุ่มเพื่อดูว่าใครถูกระบุว่ามาสาย</div>
+                    </div>
+                </div>
+
+                <div class="takeaway"><strong>สรุป:</strong> งานกะข้ามเที่ยงคืนต้องคิดด้วย "วันทำงาน (business date)" ไม่ใช่วันที่บนนาฬิกา และใช้การสแกนครั้งแรก (MIN) ในการตัดสินมาสาย</div>
+            </section>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

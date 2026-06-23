@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจัดการสลับกะและคำนวณเบี้ยเลี้ยงกะดึก</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Outfit:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-area">
+                <span class="logo-icon">🔄</span>
+                <div>
+                    <h1>ระบบสลับกะ & จัดการเบี้ยเลี้ยงกะดึก</h1>
+                    <p class="subtitle">เครื่องมือจำลองโครงสร้างฐานข้อมูลข้อ 5 (เปรียบเทียบพนักงานเดิม vs พนักงานปฏิบัติงานจริง)</p>
+                </div>
+            </div>
+            <div class="system-status">
+                <span class="status-indicator online"></span>
+                <span>เชื่อมต่อ PostgreSQL (localhost:5433)</span>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="app-tabs">
+            <button class="tab-btn active" data-tab="dashboard">
+                <span class="tab-icon">📅</span> ตารางเวรการปฏิบัติงาน
+            </button>
+            <button class="tab-btn" data-tab="swap-request">
+                <span class="tab-icon">➕</span> ยื่นคำขอสลับกะ
+            </button>
+            <button class="tab-btn" data-tab="approvals">
+                <span class="tab-icon">🛡️</span> คอนโซลหัวหน้างาน
+                <span class="badge" id="pending-count">0</span>
+            </button>
+            <button class="tab-btn" data-tab="allowance-report">
+                <span class="tab-icon">💰</span> รายงานเบี้ยเลี้ยงกะดึก
+            </button>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="app-main">
+
+            <!-- Tab 1: Dashboard / Shift Board -->
+            <section id="dashboard" class="tab-content active">
+                <div class="card glass">
+                    <div class="card-header">
+                        <h2>กระดานข้อมูลเวรปฏิบัติงาน (Shift Assignments Board)</h2>
+                        <p>แสดงการมอบหมายกะในปัจจุบัน โดยแยกข้อมูลระหว่าง <strong>พนักงานเดิม (Original)</strong> และ <strong>ผู้เข้าทำงานจริง (Effective)</strong></p>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>วันที่</th>
+                                        <th>กะการทำงาน</th>
+                                        <th>เวลา</th>
+                                        <th>พนักงานเดิมที่ได้รับมอบหมาย</th>
+                                        <th>ผู้เข้าทำงานจริง (หลังสลับกะ)</th>
+                                        <th>เบี้ยเลี้ยงกะดึก</th>
+                                        <th>อ้างอิงคำขอสลับ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="roster-tbody">
+                                    <!-- Roster rows generated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab 2: Swap Request Wizard -->
+            <section id="swap-request" class="tab-content">
+                <div class="grid-2col">
+                    <!-- Swap Request Form -->
+                    <div class="card glass">
+                        <div class="card-header">
+                            <h2>ส่งคำขอสลับกะปฏิบัติงาน</h2>
+                            <p>ยื่นคำขอเพื่อสลับกะการทำงานหรือขอให้เพื่อนร่วมงานมาทำงานแทน</p>
+                        </div>
+                        <div class="card-body">
+                            <form id="swap-form">
+                                <div class="form-group">
+                                    <label for="requesterSelect">ผู้ขอสลับ (พนักงานที่ต้องการสลับกะออก)</label>
+                                    <select id="requesterSelect" required>
+                                        <option value="">เลือกพนักงาน...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="requesterAssignmentSelect">กะงานที่ต้องการสลับออก</label>
+                                    <select id="requesterAssignmentSelect" required disabled>
+                                        <option value="">กรุณาเลือกผู้ขอสลับก่อน...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="targetSelect">พนักงานเป้าหมาย (ผู้ปฏิบัติงานแทน / แลกกะกลับ)</label>
+                                    <select id="targetSelect" required>
+                                        <option value="">เลือกพนักงาน...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>ประเภทการสลับ</label>
+                                    <div class="radio-group">
+                                        <label class="radio-label">
+                                            <input type="radio" name="swapType" value="one-way" checked>
+                                            ให้มาแทนฝ่ายเดียว (One-Way Cover)
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="swapType" value="mutual">
+                                            สลับกะกันสองฝ่าย (Mutual Swap)
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="targetAssignmentGroup" style="display: none;">
+                                    <label for="targetAssignmentSelect">กะงานของพนักงานเป้าหมาย (ที่จะแลกให้ผู้ขอสลับ)</label>
+                                    <select id="targetAssignmentSelect">
+                                        <option value="">กรุณาเลือกพนักงานเป้าหมายก่อน...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="swapReason">เหตุผลในการขอสลับกะ</label>
+                                    <input type="text" id="swapReason" placeholder="เช่น ติดธุระครอบครัว, ไปพบแพทย์" required>
+                                </div>
+                                <button type="submit" class="btn primary-btn">ส่งคำขอสลับกะ</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Explanatory Box -->
+                    <div class="card glass">
+                        <div class="card-header">
+                            <h2>ตรรกะระบบฐานข้อมูล (Database Schema Logic)</h2>
+                            <p>การจัดการข้อมูลและทรานแซกชันเบื้องหลัง:</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="schema-logic-box">
+                                <h3>1. สถานะเริ่มต้น (Initial State)</h3>
+                                <p>พนักงานเริ่มต้นปฏิบัติงานเองตามแผนงาน: ค่า <code>original_emp_id</code> และ <code>effective_emp_id</code> จะตรงกัน</p>
+                                
+                                <h3>2. สร้างคำขอสลับกะ</h3>
+                                <p>ระบบเพิ่มแถวใหม่ในตาราง <code>shift_swap_requests</code> โดยตั้งสถานะเริ่มต้นเป็น <code>'PENDING'</code></p>
+                                
+                                <h3>3. อนุมัติโดยหัวหน้างาน (Atomic Transaction)</h3>
+                                <p>เมื่อหัวหน้างานกดอนุมัติ ระบบจะรันคำสั่ง SQL ด้านล่างในชุดทรานแซกชันเดียวกัน:</p>
+                                <pre class="code-block language-sql">
+UPDATE shift_swap_requests 
+SET status='APPROVED', approved_by=3, approved_at=NOW() 
+WHERE swap_request_id = ?;
+
+UPDATE shift_assignments 
+SET effective_emp_id = ? , swap_request_id = ? 
+WHERE assignment_id = ?;</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab 3: Supervisor Console / Approvals -->
+            <section id="approvals" class="tab-content">
+                <div class="card glass">
+                    <div class="card-header">
+                        <h2>รายการรออนุมัติสลับกะ</h2>
+                        <p>หัวหน้างานทำการพิจารณาอนุมัติหรือปฏิเสธคำขอสลับกะ การอนุมัติจะอัปเดตเวรการทำงานจริงโดยอัตโนมัติ</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>เลขที่คำขอ</th>
+                                        <th>ผู้ขอสลับ</th>
+                                        <th>กะงานเดิมของผู้ขอ</th>
+                                        <th>ผู้ทำงานแทน</th>
+                                        <th>กะงานแลกคืน (ถ้ามี)</th>
+                                        <th>เหตุผล</th>
+                                        <th>สถานะ</th>
+                                        <th>การจัดการ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="requests-tbody">
+                                    <!-- Request rows generated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab 4: Night Allowance Report -->
+            <section id="allowance-report" class="tab-content">
+                <div class="grid-2col">
+                    <!-- SQL Query Visualizer -->
+                    <div class="card glass">
+                        <div class="card-header">
+                            <h2>การดึงข้อมูลเพื่อคำนวณเบี้ยเลี้ยง</h2>
+                            <p>คิวรี SQL ด้านล่างจะนับกะการทำงานจริงตามฟิลด์ <code>effective_emp_id</code> เพื่อให้จ่ายเงินเบี้ยเลี้ยงให้ผู้ที่ปฏิบัติงานกะดึกจริงได้อย่างถูกต้อง</p>
+                        </div>
+                        <div class="card-body">
+                            <pre class="code-block language-sql">
+SELECT sa.effective_emp_id              AS emp_id,
+       e.full_name,
+       COUNT(*)                          AS night_shifts_worked,
+       SUM(s.night_allowance_satang)     AS total_allowance_satang
+FROM   shift_assignments sa
+JOIN   shifts    s ON s.shift_id = sa.shift_id
+JOIN   employees e ON e.emp_id   = sa.effective_emp_id
+WHERE  s.shift_type = 'NIGHT'
+GROUP BY sa.effective_emp_id, e.full_name;</pre>
+                        </div>
+                    </div>
+
+                    <!-- Calculated Roster Allowance -->
+                    <div class="card glass">
+                        <div class="card-header">
+                            <h2>รายงานสรุปเบี้ยเลี้ยงกะดึก (จำลองผลคำนวณ)</h2>
+                            <p>สรุปจำนวนเวรกะดึกและยอดเบี้ยเลี้ยงกะดึกที่ได้รับของพนักงานแต่ละคน</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>รหัสพนักงาน</th>
+                                            <th>ชื่อ-นามสกุล</th>
+                                            <th>จำนวนกะดึกที่ทำงานจริง</th>
+                                            <th>เบี้ยเลี้ยงกะดึกรวม</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="allowance-tbody">
+                                        <!-- Report rows generated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>ระบบจำลองความสัมพันธ์และการทรานแซกชันกะการทำงาน พัฒนาขึ้นสำหรับการตรวจสอบระบบทรัพยากรบุคคล (HR Audit)</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

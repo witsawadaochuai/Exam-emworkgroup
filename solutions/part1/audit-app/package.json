@@ -1,0 +1,13 @@
+{
+  "name": "audit-trail-app",
+  "version": "1.0.0",
+  "description": "ข้อ 3 — ระบบแก้เงินเดือนย้อนหลัง + Audit Trail (PostgreSQL + Express)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.12.0"
+  }
+}

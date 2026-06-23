@@ -1,0 +1,831 @@
+/* ============================================================================
+   DESIGN SYSTEM & CUSTOM PROPERTIES
+   ============================================================================ */
+:root {
+    --bg-dark: #090d16;
+    --bg-card: rgba(17, 24, 39, 0.7);
+    --bg-terminal: #070a10;
+    
+    --primary: #06b6d4;
+    --primary-glow: rgba(6, 182, 212, 0.15);
+    --success: #10b981;
+    --success-glow: rgba(16, 185, 129, 0.15);
+    --danger: #ef4444;
+    --danger-glow: rgba(239, 68, 68, 0.15);
+    
+    --text-main: #f3f4f6;
+    --text-muted: #9ca3af;
+    --text-darker: #4b5563;
+    
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(255, 255, 255, 0.15);
+    --border-glow: rgba(6, 182, 212, 0.3);
+    
+    --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: 'Fira Code', source-code-pro, Menlo, Monaco, Consolas, monospace;
+}
+
+/* ============================================================================
+   GLOBAL STYLES & RESET
+   ============================================================================ */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.05) 0px, transparent 50%);
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+body, button, input {
+    font-family: 'Noto Sans Thai', sans-serif;
+}
+
+.lesson-card,
+.try-card,
+.example-grid {
+    margin-bottom: 1.5rem;
+}
+
+.lesson-copy {
+    line-height: 1.75;
+}
+
+.lesson-copy p {
+    margin: 0.75rem 0;
+}
+
+.demo-output {
+    margin-top: 1rem;
+    padding: 1rem 1.2rem;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.28);
+    line-height: 1.8;
+}
+
+.inline-form {
+    display: flex;
+    align-items: end;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.inline-form label {
+    display: grid;
+    gap: 0.4rem;
+    color: var(--text-muted);
+}
+
+.inline-form input {
+    min-width: 180px;
+}
+
+.takeaway {
+    padding: 1rem 1.2rem;
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    border-radius: 10px;
+    background: rgba(34, 197, 94, 0.08);
+    line-height: 1.7;
+}
+
+.bad { color: var(--danger); font-weight: 700; }
+.good { color: var(--success); font-weight: 700; }
+
+.table-wrap {
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+.result-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 620px;
+}
+
+.result-table th,
+.result-table td {
+    padding: 0.7rem 0.8rem;
+    border: 1px solid var(--border-color);
+    text-align: right;
+}
+
+.result-table th:nth-child(1),
+.result-table th:nth-child(2),
+.result-table td:nth-child(1),
+.result-table td:nth-child(2) {
+    text-align: left;
+}
+
+.result-table th {
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.balance-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+}
+
+.balance-flow > div {
+    min-width: 190px;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    text-align: center;
+}
+
+.balance-flow small,
+.balance-flow strong {
+    display: block;
+}
+
+.balance-flow strong {
+    margin-top: 0.35rem;
+    font-size: 1.5rem;
+}
+
+.app-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* ============================================================================
+   HEADER & NAVIGATION
+   ============================================================================ */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1.5rem;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo-icon {
+    font-size: 2.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.5rem;
+    border-radius: 12px;
+}
+
+.app-header h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    background: linear-gradient(135deg, #fff 30%, var(--primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.system-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.04);
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-indicator.online {
+    background-color: var(--success);
+    box-shadow: 0 0 8px var(--success);
+}
+
+/* TABS */
+.app-tabs {
+    display: flex;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.4rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    overflow-x: auto;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 0.8rem 1.2rem;
+    border-radius: 8px;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.tab-btn:hover {
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.tab-btn.active {
+    color: #fff;
+    background: var(--primary-glow);
+    border: 1px solid var(--primary);
+    box-shadow: 0 0 12px rgba(6, 182, 212, 0.1);
+}
+
+/* ============================================================================
+   LAYOUTS & CARDS
+   ============================================================================ */
+.app-main {
+    min-height: 500px;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.4s ease;
+}
+
+.part-continuation {
+    margin-top: 1.5rem;
+}
+
+.part-heading {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 1rem 1.2rem;
+    border-left: 4px solid var(--primary);
+    border-radius: 0 10px 10px 0;
+    background: rgba(6, 182, 212, 0.08);
+}
+
+.part-heading > span {
+    flex: 0 0 auto;
+    color: var(--primary);
+    font-family: var(--font-mono);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.part-heading h2,
+.part-heading p {
+    margin: 0;
+}
+
+.part-heading p {
+    margin-top: 0.2rem;
+    color: var(--text-muted);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+    .grid-2col {
+        grid-template-columns: 1fr;
+    }
+}
+
+.glass {
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transition: border-color 0.3s ease;
+}
+
+.glass:hover {
+    border-color: var(--border-hover);
+}
+
+.card-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.card-header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.card-header p {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* ============================================================================
+   FORMS & INPUTS
+   ============================================================================ */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.form-group input[type="number"],
+.form-group input[type="text"],
+.form-group input[type="password"] {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: #fff;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.hint {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.75rem;
+    color: var(--primary);
+}
+
+/* BUTTONS */
+.btn {
+    display: inline-block;
+    width: 100%;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.primary-btn {
+    background: var(--primary);
+    color: #000;
+}
+
+.primary-btn:hover {
+    background: #22d3ee;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
+}
+
+.danger-btn {
+    background: var(--danger-glow);
+    color: #fca5a5;
+    border: 1px solid var(--danger);
+}
+
+.danger-btn:hover {
+    background: var(--danger);
+    color: #fff;
+    box-shadow: 0 4px 12px var(--danger-glow);
+}
+
+.success-btn {
+    background: var(--success-glow);
+    color: #a7f3d0;
+    border: 1px solid var(--success);
+}
+
+.success-btn:hover {
+    background: var(--success);
+    color: #fff;
+    box-shadow: 0 4px 12px var(--success-glow);
+}
+
+.badge-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding: 0.3rem 0.7rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.badge-btn:hover {
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--border-hover);
+}
+
+/* ============================================================================
+   PLAYGROUND & RESULTS
+   ============================================================================ */
+.comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+.result-box {
+    position: relative;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.buggy-box {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.03) 0%, rgba(239, 68, 68, 0.01) 100%);
+    border-color: rgba(239, 68, 68, 0.2);
+}
+
+.fixed-box {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.03) 0%, rgba(16, 185, 129, 0.01) 100%);
+    border-color: rgba(16, 185, 129, 0.2);
+}
+
+.box-badge {
+    position: absolute;
+    top: -10px;
+    right: 1rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+}
+
+.box-badge.buggy {
+    background-color: var(--danger);
+    color: #fff;
+}
+
+.box-badge.fixed {
+    background-color: var(--success);
+    color: #fff;
+}
+
+.stat-group {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.stat-label {
+    color: var(--text-muted);
+}
+
+.stat-value {
+    font-family: var(--font-mono);
+    font-weight: 500;
+}
+
+.divider {
+    height: 1px;
+    background: var(--border-color);
+    margin: 0.75rem 0;
+}
+
+.final-net {
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.discrepancy-banner {
+    margin: 0 1.5rem 1.5rem 1.5rem;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 0.9rem;
+    display: none;
+}
+
+.discrepancy-banner.has-diff {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+    display: block;
+}
+
+.discrepancy-banner.no-diff {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #a7f3d0;
+    display: block;
+}
+
+/* ============================================================================
+   FLOAT ACCUMULATOR
+   ============================================================================ */
+.mismatch-display {
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.mismatch-total {
+    text-align: center;
+}
+
+.mismatch-label {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.mismatch-amount {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--danger);
+    font-family: var(--font-mono);
+    text-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+}
+
+.progress-container {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: var(--danger);
+    transition: width 0.3s ease;
+}
+
+.stats-summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.summary-tile {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.75rem;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+}
+
+.tile-title {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+}
+
+.tile-value {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+/* RANGE INPUT */
+input[type="range"] {
+    -webkit-appearance: none;
+    width: calc(100% - 40px);
+    display: inline-block;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer;
+    box-shadow: 0 0 8px var(--primary);
+}
+
+.range-val {
+    display: inline-block;
+    width: 30px;
+    text-align: right;
+    font-family: var(--font-mono);
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+/* ============================================================================
+   TERMINALS & CODE BLOCKS
+   ============================================================================ */
+.terminal-container {
+    background: var(--bg-terminal);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+    font-family: var(--font-mono);
+}
+
+.terminal-header {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+}
+
+.terminal-header::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #ef4444;
+    border-radius: 50%;
+    margin-right: 6px;
+    box-shadow: 14px 0 0 #f59e0b, 28px 0 0 #10b981;
+}
+
+.terminal-body {
+    padding: 1rem;
+    font-size: 0.8rem;
+    height: 180px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    color: #a7f3d0;
+}
+
+.query-visualizer {
+    margin-top: 1rem;
+}
+
+.query-visualizer h3 {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+}
+
+.code-block {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    overflow-x: auto;
+    color: #e2e8f0;
+}
+
+/* ============================================================================
+   SQL INJECTION SPECIFICS
+   ============================================================================ */
+.preset-attacks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.preset-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    align-self: center;
+}
+
+.db-status-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.25rem;
+    font-size: 0.9rem;
+}
+
+.alert-safe {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #a7f3d0;
+}
+
+.alert-danger {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #fca5a5;
+    animation: flash 1s infinite alternate;
+}
+
+@keyframes flash {
+    from { box-shadow: 0 0 2px rgba(239, 68, 68, 0.1); }
+    to { box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
+}
+
+.db-status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.alert-safe .db-status-dot {
+    background: var(--success);
+    box-shadow: 0 0 8px var(--success);
+}
+
+.alert-danger .db-status-dot {
+    background: var(--danger);
+    box-shadow: 0 0 8px var(--danger);
+}
+
+/* ============================================================================
+   RACE CONDITION SPECIFICS
+   ============================================================================ */
+.concurrency-outcome {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.outcome-tile {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    padding: 1rem;
+    border-radius: 12px;
+    text-align: center;
+}
+
+/* ============================================================================
+   FOOTER
+   ============================================================================ */
+.app-footer {
+    border-top: 1px solid var(--border-color);
+    padding-top: 1.5rem;
+    text-align: center;
+    color: var(--text-darker);
+    font-size: 0.8rem;
+}

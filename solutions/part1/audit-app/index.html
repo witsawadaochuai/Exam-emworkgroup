@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ข้อ 3 — ระบบแก้เงินเดือนย้อนหลัง + Audit Trail</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="logo-area">
+                <span class="logo-icon">🔐</span>
+                <div>
+                    <h1>ระบบแก้เงินเดือนย้อนหลัง (Audit Trail)</h1>
+                    <p class="subtitle">ข้อ 3 — System Design · Maker-Checker · Tamper-Evident Log</p>
+                </div>
+            </div>
+            <div id="session-bar" class="session-bar" style="display:none">
+                <span class="status-indicator online"></span>
+                <span id="session-name"></span>
+                <button id="logout-btn" class="badge-btn">ออกจากระบบ</button>
+            </div>
+        </header>
+
+        <!-- ============ LOGIN VIEW ============ -->
+        <main id="login-view" class="app-main">
+            <div class="card glass login-card">
+                <div class="card-header"><h2>เข้าสู่ระบบ</h2><p>เลือกบัญชีทดสอบ (กดการ์ดเพื่อกรอกอัตโนมัติ) แล้วกดเข้าสู่ระบบ</p></div>
+                <div class="card-body">
+                    <div class="account-chips" id="account-chips"></div>
+                    <div class="login-form">
+                        <label>Username<input id="login-user" type="text" placeholder="username"></label>
+                        <label>Password<input id="login-pass" type="password" placeholder="password"></label>
+                        <button id="login-btn" class="btn primary-btn">▶ เข้าสู่ระบบ</button>
+                    </div>
+                    <div id="login-error" class="db-status-bar alert-danger" style="display:none"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- ============ APP VIEW ============ -->
+        <main id="app-view" class="app-main" style="display:none">
+            <!-- Role-based action panel -->
+            <div id="role-panel"></div>
+
+            <!-- Database view -->
+            <h2 class="db-title">🗄️ มุมมองฐานข้อมูล (Database)</h2>
+
+            <div class="card glass db-card">
+                <div class="card-header"><h2>salary_records <span class="tbl-tag">สถานะเงินเดือนปัจจุบัน</span></h2></div>
+                <div class="card-body"><div class="table-wrap"><table class="result-table" id="tbl-salaries"></table></div></div>
+            </div>
+
+            <div class="card glass db-card">
+                <div class="card-header"><h2>salary_change_requests <span class="tbl-tag">คำขอแก้ไข (maker-checker)</span></h2></div>
+                <div class="card-body"><div class="table-wrap"><table class="result-table" id="tbl-requests"></table></div></div>
+            </div>
+
+            <div class="card glass db-card">
+                <div class="card-header">
+                    <h2>salary_audit_log <span class="tbl-tag">append-only + hash chain</span></h2>
+                    <p>ทุกการแก้ไขถูกบันทึก: ค่าเก่า → ค่าใหม่, ใคร, เมื่อไหร่ และผูก hash ต่อกันเป็นโซ่</p>
+                </div>
+                <div class="card-body">
+                    <div class="table-wrap"><table class="result-table" id="tbl-audit"></table></div>
+                    <button id="verify-btn" class="btn primary-btn" style="margin-top:1rem">🔍 ตรวจสอบความถูกต้องของระบบ (Integrity Check)</button>
+                    <div id="verify-output" class="demo-output" style="margin-top:1rem">กดเพื่อตรวจว่ามีการแก้ไขข้อมูลนอกระบบหรือไม่</div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
